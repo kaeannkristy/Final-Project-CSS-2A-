@@ -1,72 +1,9 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
-
-class Circle {
-public:
-    Circle(sf::Vector2f position) : position(position) {
-        shape.setRadius(10);
-        shape.setFillColor(sf::Color::Red);
-        shape.setPosition(position);
-    }
-
-    sf::Vector2f getPosition() const { return position; }
-    sf::CircleShape getShape() const { return shape; }
-
-    bool operator==(const Circle& other) const {
-        return position == other.position;
-    }
-
-private:
-    sf::Vector2f position;
-    sf::CircleShape shape;
-};
-
-class Rectangle {
-public:
-    Rectangle(sf::Vector2f position) : position(position) {
-        shape.setSize(sf::Vector2f(100, 100));
-        shape.setFillColor(sf::Color::Green);
-        shape.setPosition(position);
-    }
-
-    sf::Vector2f getPosition() const { return position; }
-    sf::RectangleShape getShape() const { return shape; }
-
-    void move(float x, float y) {
-        position += sf::Vector2f(x, y);
-        shape.setPosition(position); // Update the position of the shape
-    }
-
-    bool operator==(const Rectangle& other) const {
-        return position == other.position;
-    }
-
-private:
-    sf::Vector2f position;
-    sf::RectangleShape shape;
-};
-
-class Game {
-public:
-    Game() : counter(0) {}
-
-    void checkCollision(Rectangle& rectangle, std::vector<Circle>& circles) {
-        for (auto it = circles.begin(); it != circles.end();) {
-            if (rectangle.getShape().getGlobalBounds().intersects(it->getShape().getGlobalBounds())) {
-                it = circles.erase(it);
-                counter++;
-            }
-            else {
-                ++it;
-            }
-        }
-    }
-
-    int getCounter() const { return counter; }
-
-private:
-    int counter;
-};
+#include <iostream>
+#include "Circle.h"
+#include "Rectangle.h"
+#include "Game.h"
 
 int main() {
     sf::RenderWindow window(sf::VideoMode(1280, 720), "My Program");
@@ -106,6 +43,8 @@ int main() {
         // Check collision with circles
         game.checkCollision(rectangle, circles);
 
+        game.updateTimer(deltaTime);
+
         window.clear();
 
         window.draw(rectangle.getShape());
@@ -114,7 +53,25 @@ int main() {
             window.draw(circle.getShape());
         }
 
+        //timer on screen
+
+        sf::Font font;
+        if(font.loadFromFile("/Library/Fonts/Arial Unicode.ttf"))
+        {
+            sf::Text timerText("Time: " + std::to_string(static_cast<int>(game.isGameOver() ? 0.0f : game.getTimer())), font, 24);
+            timerText.setPosition(10.f, 10.f);
+            window.draw(timerText);
+        }
+
         window.display();
+
+        //is game over
+
+        if (game.isGameOver())
+        {
+            sf::sleep(sf::seconds(2));
+            window.close();
+        }
     }
 
     return 0;
