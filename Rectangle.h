@@ -1,16 +1,17 @@
 #pragma once
+#include "Shape.h"
 #include <SFML/Graphics.hpp>
 #include <iostream>
 
-class Rectangle {
+class Rectangle : public Shape {
 public:
-    Rectangle(sf::Vector2f position) : position(position) {
+    Rectangle(sf::Vector2f position) {
+        this -> position = position;
         shape.setSize(sf::Vector2f(100, 100));
         shape.setFillColor(sf::Color::Green);
         shape.setPosition(position);
     }
 
-    sf::Vector2f getPosition() const { return position; }
     sf::RectangleShape getShape() const { return shape; }
 
     void move(float x, float y) {
@@ -23,6 +24,5 @@ public:
     }
 
 private:
-    sf::Vector2f position;
     sf::RectangleShape shape;
 };

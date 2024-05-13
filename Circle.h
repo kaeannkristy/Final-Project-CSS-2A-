@@ -1,17 +1,19 @@
 #pragma once
+
+#include "Shape.h"
 #include <SFML/Graphics.hpp>
 #include <iostream>
 
 
-class Circle {
+class Circle: public Shape{
 public:
-    Circle(sf::Vector2f position) : position(position) {
+    Circle(sf::Vector2f position)  {
+        this -> position = position;
         shape.setRadius(10);
         shape.setFillColor(sf::Color::Red);
         shape.setPosition(position);
     }
 
-    sf::Vector2f getPosition() const { return position; }
     sf::CircleShape getShape() const { return shape; }
 
     bool operator==(const Circle& other) const {
@@ -19,6 +21,5 @@ public:
     }
 
 private:
-    sf::Vector2f position;
     sf::CircleShape shape;
 };
